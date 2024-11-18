@@ -53,19 +53,22 @@ class ConvNet(nn.Module):
         self.batnchnorm128 = nn.BatchNorm2d(128).to(device)
     def forward(self, x):
         #print(x.shape)
-        x = self.batnchnorm32(F.tanh(self.conv1(x)))
+        x = F.tanh(self.conv1(x))
+        #x = self.batnchnorm32(F.tanh(self.conv1(x)))
         #x = F.relu(self.batnchnorm32(self.conv1(x)))
         #print(x.shape)
         x = self.pool(x)     
         #print(f"nach pooling {x.shape}")  
-        x = self.batnchnorm64(F.tanh(self.conv2(x)))
+        x = F.tanh(self.conv2(x))
+        #x = self.batnchnorm64(F.tanh(self.conv2(x)))
         #x = F.relu(self.batnchnorm64(self.conv2(x)))
         #x = F.relu(self.conv2(x))
         #x = nn.BatchNorm2d(64) #batchnormalization
         #print(x.shape)  
         #x = self.pool(x)            
         #print(f"nach pooling {x.shape}")
-        x = self.batnchnorm128(F.tanh(self.conv3(x)))
+        x = F.tanh(self.conv3(x))
+        #x = self.batnchnorm128(F.tanh(self.conv3(x)))
         #x = F.relu(self.batnchnorm128(self.conv3(x)))
         #x = F.relu(self.conv3(x))
         #print(x.shape)  
@@ -255,11 +258,6 @@ def plot_examples(model = model):
     try:
         model.eval()  # Schalte das Modell in den Evaluierungsmodus
     except (NameError,AttributeError) as e:
-        #loading model if not loaded already
-        #need to adjust the path manually
-        #trained_model_path = ".\models\model_20241104_232646_18"
-        #model = ConvNet()
-        #model.load_state_dict(torch.load(trained_model_path, weights_only="True"))
         model.eval().to(device)
 
     #if images != None:

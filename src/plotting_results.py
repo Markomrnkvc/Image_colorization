@@ -139,7 +139,7 @@ def eval_model_and_plot(num_images=num_images):
         optimizer = optim.Adam(model.parameters(), lr = 0.005)
     except (NameError, AttributeError):
         #trained_model_path = "./models/model_20241104_232646_18"
-        trained_model_path = "./models/model_20241118_231004_0.pth"
+        trained_model_path = "./models/model_20241118_235830_0.pth"
         model = ConvNet().to(device)
         
         optimizer = optim.Adam(model.parameters(), lr = 0.005)
@@ -147,7 +147,7 @@ def eval_model_and_plot(num_images=num_images):
         #model.load_state_dict(torch.load(trained_model_path, map_location=device), strict= True)
 
 
-        checkpoint = torch.load(trained_model_path, map_location=device)
+        checkpoint = torch.load(trained_model_path, weights_only=True, map_location=device)
         model.load_state_dict(checkpoint['state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer'])
         """
