@@ -6,6 +6,7 @@ Created on Tue Jun  4 02:57:50 2024
 """
 import argparse
 import os
+import torch
 #import pandas as pd
 import CIFAR_colorization
 import plotting_results
@@ -15,13 +16,13 @@ import plotting_results
 # print(data.head())
 
 #os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-
 # Setup an argument parser for control via command line
 parser = argparse.ArgumentParser(
     prog="Grayscale image colorization",
     description="Set mode to either 'training' or 'colorization'. Specify the Dataset.",
     epilog="Students project",
 )
+
 
 parser.add_argument(
     "-m",
@@ -58,7 +59,7 @@ if args.mode == "training":
 
 
 elif args.mode == "colorization":
-    print("clustering the dataset...")
+    print("coloring example image...")
     plotting_results.eval_model_and_plot()
 """
 elif args.mode == "recommender" and args.method != None:
