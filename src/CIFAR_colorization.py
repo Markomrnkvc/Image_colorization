@@ -20,7 +20,7 @@ torch.cuda.is_available()
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-EPOCHS = 2
+EPOCHS = 1
 BATCH_SIZE = 200
 LEARNING_RATE = 0.005
 
@@ -53,26 +53,26 @@ class ConvNet(nn.Module):
         self.batnchnorm128 = nn.BatchNorm2d(128).to(device)
     def forward(self, x):
         #print(x.shape)
-        x = self.batnchnorm32(F.relu(self.conv1(x)))
+        x = self.batnchnorm32(F.tanh(self.conv1(x)))
         #x = F.relu(self.batnchnorm32(self.conv1(x)))
         #print(x.shape)
         x = self.pool(x)     
         #print(f"nach pooling {x.shape}")  
-        x = self.batnchnorm64(F.relu(self.conv2(x)))
+        x = self.batnchnorm64(F.tanh(self.conv2(x)))
         #x = F.relu(self.batnchnorm64(self.conv2(x)))
         #x = F.relu(self.conv2(x))
         #x = nn.BatchNorm2d(64) #batchnormalization
         #print(x.shape)  
         #x = self.pool(x)            
         #print(f"nach pooling {x.shape}")
-        x = self.batnchnorm128(F.relu(self.conv3(x)))
+        x = self.batnchnorm128(F.tanh(self.conv3(x)))
         #x = F.relu(self.batnchnorm128(self.conv3(x)))
         #x = F.relu(self.conv3(x))
         #print(x.shape)  
         x = self.pool(x)            
         #x = nn.BatchNorm2d(128) #batchnormalization
         #print(f"nach pooling {x.shape}")
-        x = F.relu(self.conv4(x))
+        x = F.tanh(self.conv4(x))
         #x = F.relu(self.conv6(x)) 
         #print(x.shape)  
         x = self.pool(x)         
