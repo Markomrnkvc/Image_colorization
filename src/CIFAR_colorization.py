@@ -53,10 +53,9 @@ class ConvNet(nn.Module):
         self.batnchnorm128 = nn.BatchNorm2d(128).to(device)
     def forward(self, x):
         #print(x.shape)
-        x = F.relu(self.conv1(x))
+        x = F.relu(self.batnchnorm32(self.conv1(x)))
         #print(x.shape)
-        x = self.pool(x)    
-        #x = nn.BatchNorm2d(32) #batchnormalization   
+        x = self.pool(x)     
         #print(f"nach pooling {x.shape}")  
         x = F.relu(self.batnchnorm64(self.conv2(x)))
         #x = F.relu(self.conv2(x))
@@ -128,8 +127,8 @@ def train_one_epoch(epoch_index, tb_writer):
 
         # Gather data and report
         running_loss += loss.item()
-        if i % 1000 == 999:
-            last_loss = running_loss / 1000 # loss per batch
+        if i % 50 == 0:
+            last_loss = running_loss / 200 # loss per batch
             print('  batch {} loss: {}'.format(i + 1, last_loss))
             tb_x = epoch_index * len(train_loader) + i + 1
             tb_writer.add_scalar('Loss/train', last_loss, tb_x)

@@ -7,7 +7,6 @@ Created on Tue Jun  4 02:57:50 2024
 import argparse
 import os
 import torch
-#import pandas as pd
 import CIFAR_colorization
 import plotting_results
 
