@@ -20,8 +20,8 @@ torch.cuda.is_available()
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-EPOCHS = 1
-BATCH_SIZE = 200
+EPOCHS = 2
+BATCH_SIZE = 250
 LEARNING_RATE = 0.002
 
 
@@ -48,9 +48,13 @@ class ConvNet(nn.Module):
         self.conv4 = nn.ConvTranspose2d(128, 64, 3)
         #self.conv6 = nn.ConvTranspose2d(256, 256, 3, stride = 2)
         self.conv5 = nn.Conv2d(64, 3, 1)
+
+        self.DropOut_in = nn.Dropout(p=0.2)
+        self.DropOut_hidden = nn.Dropout(p=0.4)
     def forward(self, x):
         #print(x.shape)
-        x = F.relu(self.conv1(x))   
+        #x = self.DropOut_in(F.relu(self.conv1(x)))   
+        x = F.relu(self.conv1(x))
         #print(x.shape)
         x = self.pool(x)    
         #print(f"nach pooling {x.shape}")  
@@ -58,7 +62,8 @@ class ConvNet(nn.Module):
         #print(x.shape)  
         #x = self.pool(x)            
         #print(f"nach pooling {x.shape}")
-        x = F.relu(self.conv3(x))   
+        #x = self.DropOut_hidden(F.relu(self.conv3(x)))   
+        x = F.relu(self.conv3(x))
         #print(x.shape)  
         x = self.pool(x)            
         #print(f"nach pooling {x.shape}")
@@ -119,8 +124,8 @@ def train_one_epoch(epoch_index, tb_writer):
 
         # Gather data and report
         running_loss += loss.item()
-        if i % 1000 == 999:
-            last_loss = running_loss / 1000 # loss per batch
+        if i % 50 == 0:
+            last_loss = running_loss / 200 # loss per batch
             print('  batch {} loss: {}'.format(i + 1, last_loss))
             tb_x = epoch_index * len(train_loader) + i + 1
             tb_writer.add_scalar('Loss/train', last_loss, tb_x)
@@ -234,9 +239,9 @@ def plot_examples(model = model):
     except (NameError,AttributeError) as e:
         #loading model if not loaded already
         #need to adjust the path manually
-        trained_model_path = ".\models\model_20241104_232646_18"
-        model = ConvNet()
-        model.load_state_dict(torch.load(trained_model_path, weights_only="True"))
+        #trained_model_path = ".\models\model_20241118_234506_0"
+        #model = ConvNet()
+        #model.load_state_dict(torch.load(trained_model_path, weights_only="True"))
         model.eval().to(device)
 
     #if images != None:

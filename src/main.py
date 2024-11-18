@@ -58,7 +58,7 @@ if args.mode == "training":
 
 
 elif args.mode == "colorization":
-    print("clustering the dataset...")
+    print("colorizing the data...")
     plotting_results.eval_model_and_plot()
 """
 elif args.mode == "recommender" and args.method != None:

@@ -1,7 +1,7 @@
 import torch
 import matplotlib.pyplot as plt
 import numpy as np
-from CIFAR_colorization import ConvNet, rgb_to_gray, test_dataset, test_loader
+from CIFAR_colorization import ConvNet, rgb_to_gray, test_dataset, test_loader, train_dataset, train_loader
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -52,14 +52,14 @@ def eval_model_and_plot():
     except (NameError,AttributeError) as e:
         #loading model if not loaded already
         #need to adjust the path manually
-        trained_model_path = ".\models\model_20241104_232646_18"
+        trained_model_path = ".\models\model_20241118_234506_0"
         model = ConvNet()
         model.load_state_dict(torch.load(trained_model_path, weights_only="True"))
         model.eval().to(device)
 
     #if images != None:
     with torch.no_grad():  # Keine Gradient-Berechnung nötig
-        for i, (images, _) in enumerate(test_loader):
+        for i, (images, _) in enumerate(train_loader):
             #images = denormalize(images)
             grayscale_images = rgb_to_gray(images).to(device)
             images = images.to(device)
