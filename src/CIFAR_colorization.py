@@ -53,17 +53,20 @@ class ConvNet(nn.Module):
         self.batnchnorm128 = nn.BatchNorm2d(128).to(device)
     def forward(self, x):
         #print(x.shape)
-        x = F.relu(self.batnchnorm32(self.conv1(x)))
+        x = self.batnchnorm32(F.relu(self.conv1(x)))
+        #x = F.relu(self.batnchnorm32(self.conv1(x)))
         #print(x.shape)
         x = self.pool(x)     
         #print(f"nach pooling {x.shape}")  
-        x = F.relu(self.batnchnorm64(self.conv2(x)))
+        x = self.batnchnorm64(F.relu(self.conv2(x)))
+        #x = F.relu(self.batnchnorm64(self.conv2(x)))
         #x = F.relu(self.conv2(x))
         #x = nn.BatchNorm2d(64) #batchnormalization
         #print(x.shape)  
         #x = self.pool(x)            
         #print(f"nach pooling {x.shape}")
-        x = F.relu(self.batnchnorm128(self.conv3(x)))
+        x = self.batnchnorm128(F.relu(self.conv3(x)))
+        #x = F.relu(self.batnchnorm128(self.conv3(x)))
         #x = F.relu(self.conv3(x))
         #print(x.shape)  
         x = self.pool(x)            
@@ -261,7 +264,7 @@ def plot_examples(model = model):
 
     #if images != None:
     with torch.no_grad():  # Keine Gradient-Berechnung nötig
-        for i, (images, _) in enumerate(test_loader):
+        for i, (images, _) in enumerate(train_loader):
             #images = denormalize(images)
             grayscale_images = rgb_to_gray(images).to(device)
             images = images.to(device)
