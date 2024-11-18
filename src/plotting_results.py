@@ -139,7 +139,7 @@ def eval_model_and_plot(num_images=num_images):
         optimizer = optim.Adam(model.parameters(), lr = 0.005)
     except (NameError, AttributeError):
         #trained_model_path = "./models/model_20241104_232646_18"
-        trained_model_path = "./models/model_20241118_222317_1.pth"
+        trained_model_path = "./models/model_20241118_231004_0.pth"
         model = ConvNet().to(device)
         
         optimizer = optim.Adam(model.parameters(), lr = 0.005)
