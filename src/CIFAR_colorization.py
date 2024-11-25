@@ -20,8 +20,8 @@ torch.cuda.is_available()
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-EPOCHS = 1
-BATCH_SIZE = 200
+EPOCHS = 4
+BATCH_SIZE = 150
 LEARNING_RATE = 0.005
 
 
@@ -48,34 +48,36 @@ class ConvNet(nn.Module):
         self.conv4 = nn.ConvTranspose2d(128, 64, 3)
         #self.conv6 = nn.ConvTranspose2d(256, 256, 3, stride = 2)
         self.conv5 = nn.Conv2d(64, 3, 1)
-        self.batnchnorm32 = nn.BatchNorm2d(32).to(device)
-        self.batnchnorm64 = nn.BatchNorm2d(64).to(device)
-        self.batnchnorm128 = nn.BatchNorm2d(128).to(device)
+        
+        self.batnchnorm32 = nn.BatchNorm2d(32)
+        self.batnchnorm64 = nn.BatchNorm2d(64)
+        self.batnchnorm128 = nn.BatchNorm2d(128)
     def forward(self, x):
         #print(x.shape)
-        x = F.tanh(self.conv1(x))
-        #x = self.batnchnorm32(F.tanh(self.conv1(x)))
+        x = F.relu(self.conv1(x))
+        #x = self.batnchnorm32(F.relu(self.conv1(x)))
         #x = F.relu(self.batnchnorm32(self.conv1(x)))
         #print(x.shape)
         x = self.pool(x)     
         #print(f"nach pooling {x.shape}")  
-        x = F.tanh(self.conv2(x))
-        #x = self.batnchnorm64(F.tanh(self.conv2(x)))
+        x = F.relu(self.conv2(x))
+        #x = self.batnchnorm64(F.relu(self.conv2(x)))
         #x = F.relu(self.batnchnorm64(self.conv2(x)))
         #x = F.relu(self.conv2(x))
         #x = nn.BatchNorm2d(64) #batchnormalization
         #print(x.shape)  
         #x = self.pool(x)            
         #print(f"nach pooling {x.shape}")
-        x = F.tanh(self.conv3(x))
-        #x = self.batnchnorm128(F.tanh(self.conv3(x)))
+        x = F.relu(self.conv3(x))
+        #x = self.batnchnorm128(F.relu(self.conv3(x)))
         #x = F.relu(self.batnchnorm128(self.conv3(x)))
         #x = F.relu(self.conv3(x))
         #print(x.shape)  
         x = self.pool(x)            
         #x = nn.BatchNorm2d(128) #batchnormalization
         #print(f"nach pooling {x.shape}")
-        x = F.tanh(self.conv4(x))
+        x = F.relu(self.conv4(x))
+        #x = self.batnchnorm64(F.relu(self.conv4(x)))
         #x = F.relu(self.conv6(x)) 
         #print(x.shape)  
         x = self.pool(x)         
@@ -133,8 +135,8 @@ def train_one_epoch(epoch_index, tb_writer):
 
         # Gather data and report
         running_loss += loss.item()
-        if i % 50 == 0:
-            last_loss = running_loss / 200 # loss per batch
+        if i % 1000 == 999:
+            last_loss = running_loss / 1000 # loss per batch
             print('  batch {} loss: {}'.format(i + 1, last_loss))
             tb_x = epoch_index * len(train_loader) + i + 1
             tb_writer.add_scalar('Loss/train', last_loss, tb_x)
@@ -150,7 +152,7 @@ def trainConvNet():
 
     best_vloss = 1_000_000.
 
-    model = ConvNet().to(device)
+    #model = ConvNet().to(device)
 
     for epoch in range(EPOCHS):
         print('EPOCH {}:'.format(epoch_number + 1))
@@ -163,7 +165,7 @@ def trainConvNet():
         running_vloss = 0.0
         # Set the model to evaluation mode, disabling dropout and using population
         # statistics for batch normalization.
-        model.train()
+        model.eval()
 
         # Disable gradient computation and reduce memory consumption.
         with torch.no_grad():
@@ -188,14 +190,14 @@ def trainConvNet():
         # Track best performance, and save the model's state
         if avg_vloss < best_vloss:
             best_vloss = avg_vloss
-
             
-            checkpoint = {'state_dict' : model.state_dict(), 'optimizer' : optimizer.state_dict()}
+            #saving model each epoch
+            #checkpoint = {'state_dict' : model.state_dict(), 'optimizer' : optimizer.state_dict()}
             #os.mkdir('./runs/CIFAR_colorization_{}./models'.format(timestamp))
             #model_path = './runs/CIFAR_colorization_{}./models/model_{}_{}'.format(timestamp, timestamp, epoch_number)
-            model_path = './models/model_{}_{}.pth'.format( timestamp, epoch_number)
-            torch.save(checkpoint, model_path)
+            model_path = './models/model_{}_{}'.format( timestamp, epoch_number)
             #torch.save(model.state_dict(), model_path)
+            torch.save(model.state_dict(), model_path)
             #torch.save(model, model_path)
             #torch.save(checkpoint, model_path)
             print(f"saved checkpoint in {model_path}")

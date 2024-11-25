@@ -54,10 +54,17 @@ def eval_model_and_plot():
     except (NameError,AttributeError) as e:
         #loading model if not loaded already
         #need to adjust the path manually
-        trained_model_path = ".\models\model_20241104_232646_18"
+        trained_model_path = ".\models\model_20241125_011108_14"
         model = ConvNet()
         model.load_state_dict(torch.load(trained_model_path, weights_only="True"))
+        #model.load(trained_model_path, weights_only=True)
         model.eval().to(device)
+        
+        
+        for name, module in model.named_modules():
+            if isinstance(module, torch.nn.BatchNorm2d):
+                print(f"{name}: running_mean={module.running_mean}, running_var={module.running_var}")
+        
 
     #if images != None:
     with torch.no_grad():  # Keine Gradient-Berechnung nötig
@@ -67,13 +74,16 @@ def eval_model_and_plot():
             images = images.to(device)
             # Vorhersage durch das Modell
             outputs = model(grayscale_images)
-
+            print(outputs.shape)
             
             #outputs = denormalize(outputs)
             # Plotte das Original, das Grauwertbild und das eingefärbte Bild
             plot_images(images, grayscale_images, outputs)
 
-            break  # Nur für ein Beispiel, damit die Schleife nicht endlos läuft"""
+            break  # Nur für ein Beispiel, damit die Schleife nicht endlos läuft
+    
+
+"""
  
 images_per_row =5
 num_images = 30
@@ -139,7 +149,7 @@ def eval_model_and_plot(num_images=num_images):
         optimizer = optim.Adam(model.parameters(), lr = 0.005)
     except (NameError, AttributeError):
         #trained_model_path = "./models/model_20241104_232646_18"
-        trained_model_path = "./models/model_20241118_235830_0.pth"
+        trained_model_path = ".\models\model_20241125_015133_3"
         model = ConvNet().to(device)
         
         optimizer = optim.Adam(model.parameters(), lr = 0.005)
@@ -147,20 +157,23 @@ def eval_model_and_plot(num_images=num_images):
         #model.load_state_dict(torch.load(trained_model_path, map_location=device), strict= True)
 
 
-        checkpoint = torch.load(trained_model_path, weights_only=True, map_location=device)
-        model.load_state_dict(checkpoint['state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer'])
+        #checkpoint = torch.load(trained_model_path, weights_only=True, map_location=device)
+        #model.load_state_dict(checkpoint['state_dict'])
+        #optimizer.load_state_dict(checkpoint['optimizer'])
+        model.load_state_dict(torch.load(trained_model_path, weights_only="True"))
+    	
         """
         for name, module in model.named_modules():
             if isinstance(module, torch.nn.BatchNorm2d):
                 print(f"{name}: running_mean={module.running_mean}, running_var={module.running_var}")
-        """
-        """
+        
+        
         model.train()  # Setzen Sie das Modell in den Trainingsmodus# BatchNorm mit Trainingsdaten kalibrieren
         with torch.no_grad():
             for inputs, _ in train_loader:  # Oder ein ähnlicher Daten-Loader
                 inputs = rgb_to_gray(inputs).to(device)
                 model(inputs)
+        #
         """
         model.eval().to(device)
 
