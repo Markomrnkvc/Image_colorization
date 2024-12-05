@@ -265,14 +265,10 @@ def plot_examples(model = model):
     #if images != None:
     with torch.no_grad():  # Keine Gradient-Berechnung nötig
         for i, (images, _) in enumerate(train_loader):
-            #images = denormalize(images)
             grayscale_images = rgb_to_gray(images).to(device)
             images = images.to(device)
             # Vorhersage durch das Modell
             outputs = model(grayscale_images)
-            #images = denormalize(images)
-            #images = invTrans(images)
-            #outputs = denormalize(outputs)
             # Plotte das Original, das Grauwertbild und das eingefärbte Bild
             plot_images(images, grayscale_images, outputs)
 

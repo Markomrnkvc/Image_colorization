@@ -62,39 +62,18 @@ def colorization(dataset):
             optimizer = optim.Adam(model.parameters(), lr = 0.005)
             model.load_state_dict(torch.load(trained_model_path, weights_only="True"))
 
-            #model.load_state_dict(torch.load(trained_model_path, map_location=device), strict= True)
-
-
-            #checkpoint = torch.load(trained_model_path, weights_only=True, map_location=device)
-            #model.load_state_dict(checkpoint['state_dict'])
-            #optimizer.load_state_dict(checkpoint['optimizer'])
-            
-            """
-            for name, module in model.named_modules():
-                if isinstance(module, torch.nn.BatchNorm2d):
-                    print(f"{name}: running_mean={module.running_mean}, running_var={module.running_var}")
-            
-            
-            model.train()  # Setzen Sie das Modell in den Trainingsmodus# BatchNorm mit Trainingsdaten kalibrieren
-            with torch.no_grad():
-                for inputs, _ in train_loader:  # Oder ein ähnlicher Daten-Loader
-                    inputs = rgb_to_gray(inputs).to(device)
-                    model(inputs)
-            #
-            """
             model.eval().to(device)
 
         with torch.no_grad():
             for i, (images, _) in enumerate(test_loader):
                 grayscale_images = rgb_to_gray(images).to(device)
                 images = images.to(device)
-                #images = invTrans(images)
                 outputs = model(grayscale_images)
                 
                 
                 # Zeige die ersten 'num_images' Bilder an, jeweils 5 pro Reihe
                 plot_images_grid(images[:num_images], grayscale_images[:num_images], outputs[:num_images], images_per_row=5)
-                break  # Nur eine Batch anzeigen
+                break  
     
     if dataset == "Cifar10":
         from CIFAR_colorization import ConvNet, rgb_to_gray, test_dataset, test_loader, train_loader, train_dataset

@@ -11,12 +11,7 @@ import CIFAR_colorization
 import Imagenette_colorization
 import plotting_results
 
-# picklefiley = "/Users/mjy/Downloads/data_clustered_5kentries.pkl"
-# data = pd.read_pickle(picklefiley)
-# print(data.head())
 
-#os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-# Setup an argument parser for control via command line
 parser = argparse.ArgumentParser(
     prog="Grayscale image colorization",
     description="Set mode to either 'training' or 'colorization'. Specify the Dataset.",
@@ -66,13 +61,3 @@ elif args.mode == "colorization" and args.dataset != None:
     print("coloring example image...")
     #plotting_results.eval_model_and_plot()
     plotting_results.colorization(dataset = args.dataset)
-"""
-elif args.mode == "recommender" and args.method != None:
-    print("starting recommendation app...")
-    recommender = Recommender(methods=args.method)
-    recommender.recommend()
-
-elif args.mode == "recommender_no_cluster":
-    print("start with the Recommender (no clusters)")
-    recommender_no_cluster = Recommender_NC(methods=args.method)
-    recommender_no_cluster.recommend()"""
