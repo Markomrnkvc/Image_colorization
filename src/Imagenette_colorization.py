@@ -38,10 +38,6 @@ except RuntimeError:
 
     test_dataset = torchvision.datasets.Imagenette(root = "./Imagenette_data", split="val", size="320px", download=False, transform=transform)
 
-#train_dataset = torchvision.datasets.Places365(root = "./Places365_data", split="train-standard", small=True, download=True, transform=transform)
-
-#test_dataset = torchvision.datasets.Places365(root = "./Places365_data", split="val", small=True, download=True, transform=transform)
-
 
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 
@@ -151,7 +147,7 @@ def train_one_epoch(epoch_index, tb_writer):
 def trainConvNet():
     # Initializing in a separate cell so we can easily add more epochs to the same run
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    writer = SummaryWriter('runs/CIFAR_colorization_{}'.format(timestamp))
+    writer = SummaryWriter('runs/Imagenette_colorization_{}'.format(timestamp))
     epoch_number = 0
 
     best_vloss = 1_000_000.
@@ -254,14 +250,11 @@ def plot_examples(model = model):
     #if images != None:
     with torch.no_grad():  # Keine Gradient-Berechnung nötig
         for i, (images, _) in enumerate(train_loader):
-            #images = denormalize(images)
+
             grayscale_images = rgb_to_gray(images).to(device)
             images = images.to(device)
             # Vorhersage durch das Modell
             outputs = model(grayscale_images)
-            #images = denormalize(images)
-            #images = invTrans(images)
-            #outputs = denormalize(outputs)
             # Plotte das Original, das Grauwertbild und das eingefärbte Bild
             plot_images(images, grayscale_images, outputs)
 
