@@ -50,7 +50,7 @@ if args.mode == "training" and args.dataset == "Cifar10":
     if args.plot_examples == "True":
         print("plotting examples")
         CIFAR_colorization.plot_examples()
-if args.mode == "training" and args.dataset == "Imagenette":
+elif args.mode == "training" and args.dataset == "Imagenette":
     Imagenette_colorization.trainConvNet()
     if args.plot_examples == "True":
         print("plotting examples")
