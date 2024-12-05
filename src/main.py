@@ -8,6 +8,7 @@ import argparse
 import os
 import torch
 import CIFAR_colorization
+import ImageNet_colorization
 import plotting_results
 
 # picklefiley = "/Users/mjy/Downloads/data_clustered_5kentries.pkl"
@@ -32,9 +33,8 @@ parser.add_argument(
 #parser.add_argument("-d", "--Dataset", help="Path to Dataset")
 parser.add_argument(
     "-d",
-    "--Dataset",
-    nargs="+",
-    choices=["Cifar10", "Private"],
+    "--dataset",
+    choices=["Cifar10", "ImageNet"],
     help="choose which Dataset you want to use to colorize the uploaded images",
 )
 
@@ -49,17 +49,23 @@ parser.add_argument(
 args = parser.parse_args()
 
 # switch control flow based on arguments
-if args.mode == "training":
+if args.mode == "training" and args.dataset == "Cifar10":
     print("training image colorization network...")
     CIFAR_colorization.trainConvNet()
     if args.plot_examples == "True":
         print("plotting examples")
         CIFAR_colorization.plot_examples()
+if args.mode == "training" and args.dataset == "ImageNet":
+    ImageNet_colorization.trainConvNet()
+    if args.plot_examples == "True":
+        print("plotting examples")
+        ImageNet_colorization.plot_examples()
 
 
-elif args.mode == "colorization":
+elif args.mode == "colorization" and args.dataset != None:
     print("coloring example image...")
-    plotting_results.eval_model_and_plot()
+    #plotting_results.eval_model_and_plot()
+    plotting_results.colorization(dataset = args.dataset)
 """
 elif args.mode == "recommender" and args.method != None:
     print("starting recommendation app...")
