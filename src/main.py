@@ -8,7 +8,7 @@ import argparse
 import os
 import torch
 import CIFAR_colorization
-import ImageNet_colorization
+import Imagenette_colorization
 import plotting_results
 
 # picklefiley = "/Users/mjy/Downloads/data_clustered_5kentries.pkl"
@@ -34,7 +34,7 @@ parser.add_argument(
 parser.add_argument(
     "-d",
     "--dataset",
-    choices=["Cifar10", "ImageNet"],
+    choices=["Cifar10", "Imagenette"],
     help="choose which Dataset you want to use to colorize the uploaded images",
 )
 
@@ -55,11 +55,11 @@ if args.mode == "training" and args.dataset == "Cifar10":
     if args.plot_examples == "True":
         print("plotting examples")
         CIFAR_colorization.plot_examples()
-if args.mode == "training" and args.dataset == "ImageNet":
-    ImageNet_colorization.trainConvNet()
+if args.mode == "training" and args.dataset == "Imagenette":
+    Imagenette_colorization.trainConvNet()
     if args.plot_examples == "True":
         print("plotting examples")
-        ImageNet_colorization.plot_examples()
+        Imagenette_colorization.plot_examples()
 
 
 elif args.mode == "colorization" and args.dataset != None:

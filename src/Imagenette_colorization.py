@@ -108,13 +108,6 @@ optimizer = optim.Adam(model.parameters(), lr = LEARNING_RATE)
 def rgb_to_gray(img):
     return img.mean(dim=1, keepdim=True)
 
-def denormalize(tensor):
-    # Annahme: tensor hat Form (C, H, W) und ist im Bereich [-1, 1] nach Normalisierung
-    denorm = tensor.clone()  # Erstellen einer Kopie des Tensors, um das Original zu bewahren
-    for t in range(denorm.size(0)):  # Für jeden Farbkanal
-        denorm[t] = denorm[t] * 0.5 + 0.5  # Rücknormalisierung mit Standardabweichung und Mittelwert
-    return denorm
-
 
 def train_one_epoch(epoch_index, tb_writer):
     running_loss = 0.
@@ -206,7 +199,7 @@ def trainConvNet():
             #checkpoint = {'state_dict' : model.state_dict(), 'optimizer' : optimizer.state_dict()}
             #os.mkdir('./runs/CIFAR_colorization_{}./models'.format(timestamp))
             #model_path = './runs/CIFAR_colorization_{}./models/model_{}_{}'.format(timestamp, timestamp, epoch_number)
-            model_path = './models/model_{}_{}'.format( timestamp, epoch_number)
+            model_path = './models_Imagenette/model_{}_{}'.format( timestamp, epoch_number)
             #torch.save(model.state_dict(), model_path)
             torch.save(model.state_dict(), model_path)
             #torch.save(model, model_path)
@@ -250,18 +243,6 @@ def plot_images(original, grayscale, colorized):
     
     plt.show()
 
-def denormalize(tensor):
-    # Annahme: tensor hat Form (C, H, W) und ist im Bereich [-1, 1] nach Normalisierung
-    denorm = tensor.clone()  # Erstellen einer Kopie des Tensors, um das Original zu bewahren
-    for t in range(denorm.size(0)):  # Für jeden Farbkanal
-        denorm[t] = denorm[t] * 0.5 + 1  # Rücknormalisierung mit Standardabweichung und Mittelwert
-    return denorm
-
-invTrans = transforms.Compose([ transforms.Normalize(mean = [ 0., 0., 0. ],
-                                                    std = [ 1/0.5, 1/0.5, 1/0.5 ]),
-                            transforms.Normalize(mean = [ -0.5, -0.5, -0.5 ],
-                                                    std = [ 1., 1., 1. ]),
-                            ])
 
 # Beispiel: Zeige ein Bild, graues Bild und das durch das Modell eingefärbte Bild an
 def plot_examples(model = model):

@@ -49,9 +49,9 @@ class ConvNet(nn.Module):
         #self.conv6 = nn.ConvTranspose2d(256, 256, 3, stride = 2)
         self.conv5 = nn.Conv2d(64, 3, 1)
         
-        self.batnchnorm32 = nn.BatchNorm2d(32)
-        self.batnchnorm64 = nn.BatchNorm2d(64)
-        self.batnchnorm128 = nn.BatchNorm2d(128)
+        #self.batnchnorm32 = nn.BatchNorm2d(32)
+        #self.batnchnorm64 = nn.BatchNorm2d(64)
+        #self.batnchnorm128 = nn.BatchNorm2d(128)
     def forward(self, x):
         #print(x.shape)
         x = F.relu(self.conv1(x))
@@ -195,7 +195,7 @@ def trainConvNet():
             #checkpoint = {'state_dict' : model.state_dict(), 'optimizer' : optimizer.state_dict()}
             #os.mkdir('./runs/CIFAR_colorization_{}./models'.format(timestamp))
             #model_path = './runs/CIFAR_colorization_{}./models/model_{}_{}'.format(timestamp, timestamp, epoch_number)
-            model_path = './models/model_{}_{}'.format( timestamp, epoch_number)
+            model_path = './models_Cifar10/model_{}_{}'.format( timestamp, epoch_number)
             #torch.save(model.state_dict(), model_path)
             torch.save(model.state_dict(), model_path)
             #torch.save(model, model_path)

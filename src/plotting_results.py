@@ -2,8 +2,6 @@ import torch
 import torch.optim as optim
 import matplotlib.pyplot as plt
 import numpy as np
-#from CIFAR_colorization import ConvNet, rgb_to_gray, test_dataset, test_loader, train_loader, train_dataset
-from ImageNet_colorization import ConvNet, rgb_to_gray, test_dataset, test_loader, train_loader, train_dataset
 from torchvision import transforms
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -50,12 +48,6 @@ def colorization(dataset):
         # Entferne Abstände zwischen den Subplots
         plt.subplots_adjust(wspace=0, hspace=0)
         plt.show()
-
-    def denormalize(tensor):
-        denorm = tensor.clone()
-        for t in range(denorm.size(0)):
-            denorm[t] = denorm[t] * 0.5 + 0.5
-        return denorm
 
     def rgb_to_gray(img):
         return img.mean(dim=1, keepdim=True)
@@ -106,10 +98,10 @@ def colorization(dataset):
     
     if dataset == "Cifar10":
         from CIFAR_colorization import ConvNet, rgb_to_gray, test_dataset, test_loader, train_loader, train_dataset
-        trained_model_path = "./models/model_20241104_232646_18"
+        trained_model_path = "./models_Cifar10/model_20241104_232646_18"
             
-    elif dataset == "ImageNet":
-        from ImageNet_colorization import ConvNet, rgb_to_gray, test_dataset, test_loader, train_loader, train_dataset
-        trained_model_path = ".\models\model_20241126_173658_10"
+    elif dataset == "Imagenette":
+        from Imagenette_colorization import ConvNet, rgb_to_gray, test_dataset, test_loader, train_loader, train_dataset
+        trained_model_path = ".\models_Imagenette\model_20241126_173658_10"
 
     eval_model_and_plot(num_images)
