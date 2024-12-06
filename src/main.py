@@ -10,6 +10,7 @@ import torch
 import CIFAR_colorization
 import Imagenette_colorization
 import plotting_results
+import live_demo
 
 
 parser = argparse.ArgumentParser(
@@ -22,7 +23,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "-m",
     "--mode",
-    choices=["training", "colorization"],
+    choices=["training", "colorization", "live"],
     help="Choose which mode you want to execute",
 )
 #parser.add_argument("-d", "--Dataset", help="Path to Dataset")
@@ -61,3 +62,8 @@ elif args.mode == "colorization" and args.dataset != None:
     print("coloring example image...")
     #plotting_results.eval_model_and_plot()
     plotting_results.colorization(dataset = args.dataset)
+
+elif args.mode == "live" and args.dataset == "Imagenette":
+    print("coloring example image...")
+    #plotting_results.eval_model_and_plot()
+    live_demo.live(args)

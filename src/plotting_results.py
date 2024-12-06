@@ -3,6 +3,7 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 import numpy as np
 from torchvision import transforms
+import cv2 as cv
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -66,13 +67,16 @@ def colorization(dataset):
 
         with torch.no_grad():
             for i, (images, _) in enumerate(test_loader):
-                grayscale_images = rgb_to_gray(images).to(device)
+                #grayscale_images = rgb_to_gray(images).to(device)
+                grayscale_images = transforms.functional.rgb_to_grayscale(images).to(device)
                 images = images.to(device)
+                print(images.shape)
+                print(grayscale_images.shape)
                 outputs = model(grayscale_images)
                 
                 
                 # Zeige die ersten 'num_images' Bilder an, jeweils 5 pro Reihe
-                plot_images_grid(images[:num_images], grayscale_images[:num_images], outputs[:num_images], images_per_row=5)
+                plot_images_grid(images[:num_images], grayscale_images[:num_images], outputs[:num_images], images_per_row=images_per_row)
                 break  
     
     if dataset == "Cifar10":
@@ -80,7 +84,7 @@ def colorization(dataset):
         trained_model_path = "./models_Cifar10/model_20241104_232646_18"
             
     elif dataset == "Imagenette":
-        from Imagenette_colorization import ConvNet, rgb_to_gray, test_dataset, test_loader, train_loader, train_dataset
+        from Imagenette_colorization import ConvNet, test_dataset, test_loader, train_loader, train_dataset
         trained_model_path = ".\models_Imagenette\model_20241126_173658_10"
 
     eval_model_and_plot(num_images)

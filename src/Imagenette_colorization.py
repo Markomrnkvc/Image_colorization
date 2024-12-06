@@ -20,7 +20,7 @@ torch.cuda.is_available()
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-EPOCHS = 12
+EPOCHS = 4
 BATCH_SIZE = 8
 LEARNING_RATE = 0.005
 
@@ -63,36 +63,45 @@ class ConvNet(nn.Module):
         self.batnchnorm32 = nn.BatchNorm2d(32)
         self.batnchnorm64 = nn.BatchNorm2d(64)
         self.batnchnorm128 = nn.BatchNorm2d(128)
+        self.batnchnorm256 = nn.BatchNorm2d(256)
+        self.batnchnorm3 = nn.BatchNorm2d(3)
     def forward(self, x):
         #print(f"Input shape: {x.shape}") 
-        x = F.relu(self.conv1(x))
-        #x = self.batnchnorm32(F.relu(self.conv1(x)))
+        #x = F.relu(self.conv1(x))
+        x = self.batnchnorm32(F.relu(self.conv1(x)))
         #print(x.shape)
         x = self.pool(x)     
+
         #print(f"nach pooling {x.shape}")  
-        x = F.relu(self.conv2(x))
-        #x = self.batnchnorm64(F.relu(self.conv2(x)))
+        #x = F.relu(self.conv2(x))
+        x = self.batnchnorm64(F.relu(self.conv2(x)))
+
         #x = F.relu(self.batnchnorm64(self.conv2(x)))
-        x = F.relu(self.trans1(x))
-        #x = self.batnchnorm128(F.relu(self.conv3(x)))
+        #x = F.relu(self.trans1(x))
+        x = self.batnchnorm128(F.relu(self.trans1(x)))
         #print(f"nach trans1 {x.shape}")
         x = self.pool(x)            
+
         #x = nn.BatchNorm2d(128) #batchnormalization
         #print(f"nach pooling {x.shape}")
-        x = F.relu(self.trans2(x))
-        #x = self.batnchnorm64(F.relu(self.conv4(x)))
+        #x = F.relu(self.trans2(x))
+        x = self.batnchnorm256(F.relu(self.trans2(x)))
         #x = F.relu(self.conv6(x)) 
         #print(f"nach trans2 {x.shape}")
         x = self.pool(x)         
 
-        x = F.relu(self.trans3(x))
+        #x = F.relu(self.trans3(x))
+        
+        x = self.batnchnorm256(F.relu(self.trans3(x)))
         #x = nn.BatchNorm2d(64) #batchnormalization 
         x = F.interpolate(x, size=(320, 320), mode='bilinear', align_corners=False)
         #print(f"nach trans3 und interpolation{x.shape}")
 
-        x = F.relu(self.conv3(x))
+        #x = F.relu(self.conv3(x))
+        x = self.batnchnorm128(F.relu(self.conv3(x)))
 
-        x = torch.sigmoid(self.conv4(x))
+        x = self.batnchnorm3(torch.sigmoid(self.conv4(x)))
+        #x = torch.sigmoid(self.conv4(x))
         return x
 
 #moving the model to the used device
@@ -100,9 +109,6 @@ model = ConvNet().to(device)
 
 criterion = nn.MSELoss().to(device)
 optimizer = optim.Adam(model.parameters(), lr = LEARNING_RATE)
-
-def rgb_to_gray(img):
-    return img.mean(dim=1, keepdim=True)
 
 
 def train_one_epoch(epoch_index, tb_writer):
@@ -114,7 +120,7 @@ def train_one_epoch(epoch_index, tb_writer):
     # index and do some intra-epoch reporting
     for i, (images,_) in tqdm(enumerate(train_loader), total=len(train_dataset), desc="Progress in current epoch"):
         #grayscaling images for training
-        grayscale_images = rgb_to_gray(images)
+        grayscale_images = transforms.functional.rgb_to_grayscale(images)
         images = images.to(device)
         # defining model inputs
         inputs= grayscale_images.to(device)
@@ -171,7 +177,7 @@ def trainConvNet():
         with torch.no_grad():
             for i,  (vimages,_) in enumerate(test_loader):
                 vimages = vimages.to(device)
-                vimages_grayscale = rgb_to_gray(vimages)
+                vimages_grayscale = transforms.functional.rgb_to_grayscale(vimages)
                 vinputs = vimages_grayscale.to(device)
                 voutputs = model(vinputs).to(device)
                 vloss = criterion(voutputs, vimages)
@@ -251,7 +257,7 @@ def plot_examples(model = model):
     with torch.no_grad():  # Keine Gradient-Berechnung nötig
         for i, (images, _) in enumerate(train_loader):
 
-            grayscale_images = rgb_to_gray(images).to(device)
+            grayscale_images = transforms.functional.rgb_to_grayscale(images).to(device)
             images = images.to(device)
             # Vorhersage durch das Modell
             outputs = model(grayscale_images)
