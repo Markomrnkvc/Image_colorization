@@ -20,7 +20,8 @@ def live(args):
     elif args.dataset == "Imagenette":
         from Imagenette_colorization import ConvNet
         #trained_model_path = ".\models_Imagenette\model_20241126_173658_10"
-        trained_model_path = ".\models_Imagenette\model_20241205_232140_0"
+        #trained_model_path = ".\models_Imagenette\model_20241205_232140_0"
+        trained_model_path = ".\models_Imagenette\model_20241209_005507_0"
         print("Imagenette")
 
 
@@ -54,12 +55,11 @@ def live(args):
         frame = cv.resize(frame, (320, 320))
 
         gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+
         #converting np array to PIL to be able to apply transforms
         frame_PIL = Image.fromarray(np.uint8(frame))
-        print(frame.shape)
         #applying transforms
         frame_transformed = transform(frame_PIL)
-        print(frame_transformed.shape)
         #image to grayscale
         grayscale_images = torchvision.transforms.functional.rgb_to_grayscale(frame_transformed).to(device)
         #adding batch
@@ -68,7 +68,7 @@ def live(args):
         outputs = model(grayscale_images)
         #batch tensor to np array
         colorized_image = im_convert(outputs[0])#im_convert takes batches
-        #print(type(grayscale_images))
+
         cv.imshow('Input',frame)
         cv.imshow('grayscale', gray)
         cv.imshow('colorized', colorized_image)
