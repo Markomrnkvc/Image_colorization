@@ -20,9 +20,9 @@ torch.cuda.is_available()
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-EPOCHS = 3
+EPOCHS = 75
 BATCH_SIZE = 8
-LEARNING_RATE = 0.005
+LEARNING_RATE = 0.00005
 
 
 transform = transforms.Compose([transforms.Resize((320, 320)),
@@ -88,7 +88,7 @@ class ConvNet(nn.Module):
         #x = nn.BatchNorm2d(128) #batchnormalization
         #print(f"nach pooling {x.shape}")
         #x = F.relu(self.trans2(x))
-        x = self.batnchnorm256(self.DropOut_hidden(F.relu(self.trans2(x))))
+        x = self.batnchnorm256(F.relu(self.trans2(x)))
         #x = F.relu(self.conv6(x)) 
         #print(f"nach trans2 {x.shape}")
         x = self.pool(x)         
@@ -118,10 +118,8 @@ def train_one_epoch(epoch_index, tb_writer):
     running_loss = 0.
     last_loss = 0.
 
-    # Here, we use enumerate(training_loader) instead of
-    # iter(training_loader) so that we can track the batch
-    # index and do some intra-epoch reporting
-    for i, (images,_) in tqdm(enumerate(train_loader), total=len(train_dataset), desc="Progress in current epoch"):
+    total_batches = len(train_loader)
+    for i, (images,_) in tqdm(enumerate(train_loader), total=total_batches, desc="Progress in current epoch"):
         #grayscaling images for training
         grayscale_images = transforms.functional.rgb_to_grayscale(images)
         images = images.to(device)
@@ -144,14 +142,15 @@ def train_one_epoch(epoch_index, tb_writer):
 
         # Gather data and report
         running_loss += loss.item()
-        if i % 1000 == 999:
+        if i % 200 == 199:
             last_loss = running_loss / 1000 # loss per batch
-            print('  batch {} loss: {}'.format(i + 1, last_loss))
+            print('  batch {} loss: {}'.format(i + 1, last_loss* 10000.0))
             tb_x = epoch_index * len(train_loader) + i + 1
             tb_writer.add_scalar('Loss/train', last_loss, tb_x)
             running_loss = 0.
 
-    return last_loss
+    #return last_loss* 10000.0
+    return last_loss * 10000.0
         
 def trainConvNet():
     # Initializing in a separate cell so we can easily add more epochs to the same run

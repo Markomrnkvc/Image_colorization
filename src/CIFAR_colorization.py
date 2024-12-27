@@ -15,14 +15,15 @@ import torch
 import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
+from dataset_CIFAR10 import pixelclass_dataset_CIFAR10
 
 torch.cuda.is_available()
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-EPOCHS = 100
-BATCH_SIZE = 1000
-LEARNING_RATE = 0.005
+EPOCHS = 1750
+BATCH_SIZE = 1
+LEARNING_RATE = 0.00005
 
 
 transform = transforms.Compose([transforms.ToTensor(),
@@ -32,6 +33,10 @@ transform = transforms.Compose([transforms.ToTensor(),
 train_dataset = torchvision.datasets.CIFAR10(root = "./CIFAR_data", train=True, download=False, transform=transform)
 
 test_dataset = torchvision.datasets.CIFAR10(root = "./CIFAR_data", train=False, download=False, transform=transform)
+
+#train_dataset = pixelclass_dataset_CIFAR10(root='./data', train=True, download=True, transform=transform)
+#test_dataset = pixelclass_dataset_CIFAR10(root='./data', train=False, download=True, transform=transform)
+
 
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 
@@ -296,6 +301,12 @@ def train_one_epoch(epoch_index, tb_writer):
     #print(f"Total batches in train_loader: {total_batches}")
 
     for i, (images, _) in tqdm(enumerate(train_loader), total=total_batches, desc="Progress in current epoch"):
+        print(f"type: {type(labels)}\n")
+        print(f"len: {len(labels)}")
+        print(f"shape: {labels.shape}")
+        print(labels)
+
+        print(images.shape)
         grayscale_images = transforms.functional.rgb_to_grayscale(images)
         images = images.to(device)
         inputs = grayscale_images.to(device)
@@ -481,4 +492,3 @@ def plot_examples(model = model):
             plot_images(images, grayscale_images, outputs)
 
             break  # Nur für ein Beispiel, damit die Schleife nicht endlos läuft"""
-

@@ -21,7 +21,8 @@ def live(args):
         from Imagenette_colorization import ConvNet
         #trained_model_path = ".\models_Imagenette\model_20241126_173658_10"
         #trained_model_path = ".\models_Imagenette\model_20241205_232140_0"
-        trained_model_path = ".\models_Imagenette\model_20241209_005507_0"
+        #trained_model_path = ".\models_Imagenette\model_20241209_005507_0"
+        trained_model_path = ".\models_Imagenette\model_20241224_172116_74"
         print("Imagenette")
 
 
