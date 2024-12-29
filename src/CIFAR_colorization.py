@@ -15,7 +15,7 @@ import torch
 import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
-from dataset_CIFAR10 import pixelclass_dataset_CIFAR10
+#from dataset_CIFAR10 import pixelclass_dataset_CIFAR10
 
 torch.cuda.is_available()
 # Device configuration
@@ -34,8 +34,8 @@ train_dataset = torchvision.datasets.CIFAR10(root = "./CIFAR_data", train=True, 
 
 test_dataset = torchvision.datasets.CIFAR10(root = "./CIFAR_data", train=False, download=False, transform=transform)
 
-#train_dataset = pixelclass_dataset_CIFAR10(root='./data', train=True, download=True, transform=transform)
-#test_dataset = pixelclass_dataset_CIFAR10(root='./data', train=False, download=True, transform=transform)
+#train_dataset = pixelclass_dataset_CIFAR10(root='./data', train=True, download=False, transform=transform)
+#test_dataset = pixelclass_dataset_CIFAR10(root='./data', train=False, download=False, transform=transform)
 
 
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
@@ -300,13 +300,7 @@ def train_one_epoch(epoch_index, tb_writer):
     total_batches = len(train_loader)
     #print(f"Total batches in train_loader: {total_batches}")
 
-    for i, (images, _) in tqdm(enumerate(train_loader), total=total_batches, desc="Progress in current epoch"):
-        print(f"type: {type(labels)}\n")
-        print(f"len: {len(labels)}")
-        print(f"shape: {labels.shape}")
-        print(labels)
-
-        print(images.shape)
+    for i, (images, labels) in tqdm(enumerate(train_loader), total=total_batches, desc="Progress in current epoch"):
         grayscale_images = transforms.functional.rgb_to_grayscale(images)
         images = images.to(device)
         inputs = grayscale_images.to(device)
@@ -368,15 +362,6 @@ def trainConvNet():
 
         # Disable gradient computation and reduce memory consumption.
         with torch.no_grad():
-            """
-            for i,  (vimages,_) in enumerate(test_loader):
-                vimages = vimages.to(device)
-                vimages_grayscale = transforms.functional.rgb_to_grayscale(vimages)
-                vinputs = vimages_grayscale.to(device)
-                voutputs = model(vinputs).to(device)
-                vloss = criterion(voutputs, vimages)
-                running_vloss += vloss
-            """
             for i, (vimages, _) in enumerate(test_loader):
                 if i >= len(test_loader):
                     break
