@@ -6,32 +6,20 @@ from PIL import Image
 import os
 import numpy as np
 
-class pixelclass_dataset_CIFAR10(torchvision.datasets.CIFAR10):
+class PixelClassDataset(torch.utils.data.Dataset):
     """
-    def __init__(self, rgb_image_paths):
-        self.rgb_image_paths = rgb_image_paths  # Liste der Pfade zu RGB-Bildern
-        #self.transform = transforms.Compose([transforms.ToTensor(), transforms.Grayscale(num_output_channels=1)])
+    custom Dataset for CIFAR10 for use in classification colorizing problem
     """
-    def __init__(self, root, train=True, download=False, transform=None):
-        super().__init__(root=root, train=train, download=download, transform=transform)
+    
+    def __init__(self, root, train=True, transform=None):
+        self.data = torchvision.datasets.CIFAR10(root=root, train=train, download=False)
+        self.transform = transform
 
-    #def __len__(self):
-     #   return len(self.rgb_image_paths)
+    def __getitem__(self, index):
+        img, _ = self.data[index]
+        img_tensor = transforms.ToTensor()(img)  # Convert to tensor
+        label_tensor = (img_tensor * 255).long()  # Create label tensor
+        return img_tensor, label_tensor
 
-    def __getitem__(self, idx):
-        """
-        rgb_image_path = self.rgb_image_paths[idx]
-        rgb_image = Image.open(rgb_image_path).convert('RGB')
-        """
-
-        img, label = super().__getitem__(idx)
-
-        label = torch.tensor(img)
-        return img, label  # Eingabe und Ziel
-
-
-
-"""
-bild in lab umwandeln
-pixelklassen erstellen als labels in form: tensor([3])  [3 ist die klasse]
-"""
+    def __len__(self):
+        return len(self.data)
