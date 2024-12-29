@@ -1,74 +1,86 @@
 import torch
+import torch.optim as optim
 import matplotlib.pyplot as plt
 import numpy as np
-from CIFAR_colorization import ConvNet, rgb_to_gray, test_dataset, test_loader
-
+from torchvision import transforms
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# Funktion zum Umwandeln eines Torch-Tensors in ein Numpy-Array
-def im_convert(tensor):
-    image = tensor.cpu().clone().detach().numpy()
-    image = np.transpose(image, (1, 2, 0))  # Von (C, H, W) zu (H, W, C)
-    #image = np.clip(image, 0, 1)  # Werte zwischen 0 und 1 setzen
-    return image
-
-# Visualisierungsfunktion
-def plot_images(original, grayscale, colorized):
-    original_img = im_convert(original[0])  # Originalbild (RGB)
-    grayscale_img = im_convert(grayscale[0])  # Graustufenbild
-    colorized_img = im_convert(colorized[0])  # Vom Modell eingefärbtes Bild
-    #print(colorized_img.mean())
-    fig, ax = plt.subplots(1, 3, figsize=(18, 6))
+def colorization(dataset):
     
-    # Originalbild
-    ax[0].imshow(original_img)
-    ax[0].set_title("Original RGB Image")
-    ax[0].axis('off')
-    
-    # Grauwertbild
-    ax[1].imshow(grayscale_img, cmap='gray')
-    ax[1].set_title("Grayscale Image")
-    ax[1].axis('off')
-    
-    # Vom Modell eingefärbtes Bild
-    ax[2].imshow(colorized_img)
-    ax[2].set_title("Colorized by Model")
-    ax[2].axis('off')
-    
-    plt.show()
+    import torch
+    import matplotlib.pyplot as plt
+    import numpy as np
 
-def denormalize(tensor):
-    # Annahme: tensor hat Form (C, H, W) und ist im Bereich [-1, 1] nach Normalisierung
-    denorm = tensor.clone()  # Erstellen einer Kopie des Tensors, um das Original zu bewahren
-    for t in range(denorm.size(0)):  # Für jeden Farbkanal
-        denorm[t] = denorm[t] * 0.5 + 0.5  # Rücknormalisierung mit Standardabweichung und Mittelwert
-    return denorm
+    images_per_row =5
+    num_images = 30
+    def im_convert(tensor):
+        image = tensor.cpu().clone().detach().numpy()
+        image = np.transpose(image, (1, 2, 0))  # Von (C, H, W) zu (H, W, C)
+        return image
 
-def eval_model_and_plot():
-    # Beispiel: Zeige ein Bild, graues Bild und das durch das Modell eingefärbte Bild an
-    try:
-        model.eval()  # Schalte das Modell in den Evaluierungsmodus
-    except (NameError,AttributeError) as e:
-        #loading model if not loaded already
-        #need to adjust the path manually
-        trained_model_path = ".\models\model_20241104_232646_18"
-        model = ConvNet()
-        model.load_state_dict(torch.load(trained_model_path, weights_only="True"))
-        model.eval().to(device)
+    # Visualisierungsfunktion für Bilder in mehreren Reihen mit maximal 5 Bildern pro Reihe
+    def plot_images_grid(originals, grayscales, colorized_images, images_per_row=images_per_row):
+        num_images = min(len(originals), len(grayscales), len(colorized_images))
+        num_rows = (num_images + images_per_row - 1) // images_per_row  # Berechnet die Anzahl der benötigten Reihen
 
-    #if images != None:
-    with torch.no_grad():  # Keine Gradient-Berechnung nötig
-        for i, (images, _) in enumerate(test_loader):
-            #images = denormalize(images)
-            grayscale_images = rgb_to_gray(images).to(device)
-            images = images.to(device)
-            # Vorhersage durch das Modell
-            outputs = model(grayscale_images)
+        fig, axes = plt.subplots(num_rows, images_per_row * 3, figsize=(18, 6 * num_rows))
 
+        for idx in range(num_images):
+            row = idx // images_per_row
+            col = (idx % images_per_row) * 3
+
+            # Originalbild
+            original_img = im_convert(originals[idx])
+            axes[row, col].imshow(original_img)
+            axes[row, col].axis('off')
+
+            # Grauwertbild
+            grayscale_img = im_convert(grayscales[idx])
+            axes[row, col + 1].imshow(grayscale_img, cmap='gray')
+            axes[row, col + 1].axis('off')
+
+            # Koloriertes Bild
+            colorized_img = im_convert(colorized_images[idx])
+            axes[row, col + 2].imshow(colorized_img)
+            axes[row, col + 2].axis('off')
+
+        # Entferne Abstände zwischen den Subplots
+        plt.subplots_adjust(wspace=0, hspace=0)
+        plt.show()
+
+    def rgb_to_gray(img):
+        return img.mean(dim=1, keepdim=True)
+
+    def eval_model_and_plot(num_images=num_images):
+        try:
+            model.eval()
             
-            #outputs = denormalize(outputs)
-            # Plotte das Original, das Grauwertbild und das eingefärbte Bild
-            plot_images(images, grayscale_images, outputs)
+            optimizer = optim.Adam(model.parameters(), lr = 0.005)
+        except (NameError, AttributeError):
+            model = ConvNet().to(device)
+            optimizer = optim.Adam(model.parameters(), lr = 0.005)
+            model.load_state_dict(torch.load(trained_model_path, weights_only="True"))
 
-            break  # Nur für ein Beispiel, damit die Schleife nicht endlos läuft"""
+            model.eval().to(device)
+
+        with torch.no_grad():
+            for i, (images, _) in enumerate(test_loader):
+                grayscale_images = rgb_to_gray(images).to(device)
+                images = images.to(device)
+                outputs = model(grayscale_images)
+                
+                
+                # Zeige die ersten 'num_images' Bilder an, jeweils 5 pro Reihe
+                plot_images_grid(images[:num_images], grayscale_images[:num_images], outputs[:num_images], images_per_row=5)
+                break  
+    
+    if dataset == "Cifar10":
+        from CIFAR_colorization import ConvNet, rgb_to_gray, test_dataset, test_loader, train_loader, train_dataset
+        trained_model_path = "./models_Cifar10/model_20241104_232646_18"
+            
+    elif dataset == "Imagenette":
+        from Imagenette_colorization import ConvNet, rgb_to_gray, test_dataset, test_loader, train_loader, train_dataset
+        trained_model_path = ".\models_Imagenette\model_20241126_173658_10"
+
+    eval_model_and_plot(num_images)
