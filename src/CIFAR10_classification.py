@@ -157,7 +157,7 @@ def train_model():
         print('LOSS train {} valid {}'.format(avg_loss, avg_vloss))
         if avg_vloss < best_vloss:
             best_vloss = avg_vloss
-            model_path = './gpt/model_{}_{}'.format( timestamp, epoch)
+            model_path = './models_CIFAR10_classification/model_{}_{}'.format( timestamp, epoch)
             torch.save(model.state_dict(), model_path)
             print(f"saved checkpoint in {model_path}")
 
