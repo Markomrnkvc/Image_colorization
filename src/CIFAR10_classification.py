@@ -17,7 +17,7 @@ from dataset_CIFAR10 import PixelClassDataset
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Hyperparameters
-EPOCHS = 5
+EPOCHS = 150
 BATCH_SIZE = 36
 LEARNING_RATE = 0.0005
 NUM_CLASSES = 256  # 256 Klassen pro Kanal
