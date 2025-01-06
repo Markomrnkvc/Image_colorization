@@ -23,17 +23,17 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Hyperparameters
 EPOCHS = 30
-BATCH_SIZE = 3
-LEARNING_RATE = 0.00005
+BATCH_SIZE = 4
+LEARNING_RATE = 0.0005
 NUM_CLASSES = 256  # 2 Kanäle (a und b)
 
 # Dataset definition
 transform = transforms.Compose([
-    transforms.Resize((320, 320))#,
+    transforms.Resize((256, 256))#,
     #transforms.ToTensor()
 ])
 resize_transform = transforms.Compose([
-    transforms.Resize((320, 320)),
+    transforms.Resize((256, 256)),
     transforms.ToTensor(),
 ])
 
@@ -238,6 +238,7 @@ def extract_channels(lab_image):
     #return np.array(l_channels), np.array(a_channels), np.array(b_channels)
     """
 # Model definition
+
 class ConvNet(nn.Module):
     def __init__(self, num_classes = NUM_CLASSES):
         super(ConvNet, self).__init__()
@@ -247,36 +248,129 @@ class ConvNet(nn.Module):
         self.batchnorm128 = nn.BatchNorm2d(128)
         self.batchnorm256 = nn.BatchNorm2d(256)
         self.batchnorm512 = nn.BatchNorm2d(512)
-        self.batchnorm1024 = nn.BatchNorm2d(1024)
+        self.batchnorm512_1 = nn.BatchNorm2d(512)
 
-        self.conv0 = nn.Conv2d(1, 8, kernel_size=3, padding=1)
-        self.conv1 = nn.Conv2d(8, 16, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(16, 64, kernel_size=3, padding=1, stride=2)
+        self.batchnorm8_2 = nn.BatchNorm2d(8)
+        self.batchnorm16_2 = nn.BatchNorm2d(16)
+        self.batchnorm64_2 = nn.BatchNorm2d(64)
+        self.batchnorm128_2 = nn.BatchNorm2d(128)
+        self.batchnorm256_2 = nn.BatchNorm2d(256)
+        self.batchnorm256_1 = nn.BatchNorm2d(256)
+        self.batchnorm1024_2 = nn.BatchNorm2d(1024)
+        
+        #self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+
+        #self.conv0 = nn.Conv2d(1, 8, kernel_size=3, padding=1)
+        #self.conv1 = nn.Conv2d(8, 16, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(1, 64, kernel_size=3, padding=1, stride=2)
         self.conv3 = nn.Conv2d(64, 128, kernel_size=3, padding=1, stride=2)
         self.conv4 = nn.Conv2d(128, 256, kernel_size=3, padding=1, stride=2)
         self.conv5 = nn.Conv2d(256, 512, kernel_size=3, padding=1, stride=2)
-        self.conv5_5 = nn.Conv2d(512, 1024, kernel_size=3, padding=1, stride=2)
+        self.conv5_5 = nn.Conv2d(512, 512, kernel_size=3, padding=1, stride=2)
         
-        self.upsample0 = nn.Upsample(scale_factor=2, mode='bilinear')
-        self.conv6 = nn.Conv2d(1024, 512, kernel_size=3, padding=1)
-        self.upsample1 = nn.Upsample(scale_factor=2, mode='bilinear')
-        self.conv6_5 = nn.Conv2d(512, 256, kernel_size=3, padding=1)
-        self.upsample2 = nn.Upsample(scale_factor=2, mode='bilinear')
+        self.upsample = nn.Upsample(scale_factor=2, mode='bilinear')
+        self.conv6 = nn.Conv2d(512, 256, kernel_size=3, padding=1)
+        self.conv6_5 = nn.Conv2d(256, 256, kernel_size=3, padding=1)
         self.conv7 = nn.Conv2d(256, 128, kernel_size=3, padding=1)
-        self.upsample3 = nn.Upsample(scale_factor=2, mode='bilinear')
         self.conv8 = nn.Conv2d(128, 64, kernel_size=3, padding=1)
-        self.upsample4 = nn.Upsample(scale_factor=2, mode='bilinear')
         self.conv9 = nn.Conv2d(64, num_classes*2, kernel_size=3, padding=1) #brauchen nur a und b werte vorhersagen
 
     def forward(self, x):
         
-        x = self.batchnorm8(F.relu(self.conv0(x)))
-        x = self.batchnorm16(F.relu(self.conv1(x)))
+        #x = self.batchnorm8(F.relu(self.conv0(x)))
+        #x = self.batchnorm16(F.relu(self.conv1(x)))
         x = self.batchnorm64(F.relu(self.conv2(x)))
         x = self.batchnorm128(F.relu(self.conv3(x)))
         x = self.batchnorm256(F.relu(self.conv4(x)))
         x = self.batchnorm512(F.relu(self.conv5(x)))
+        x = self.batchnorm512_1(F.relu(self.conv5_5(x)))
+
+        x = self.upsample(x)
+        x = self.batchnorm256_1(F.relu(self.conv6(x)))
+        x = self.upsample(x)
+        x = self.batchnorm256_2(F.relu(self.conv6_5(x)))
+        x = self.upsample(x)
+        x = self.batchnorm128_2(F.relu(self.conv7(x)))
+        x = self.upsample(x)
+        x = self.batchnorm64_2(F.relu(self.conv8(x)))
+        x = self.upsample(x)
+        x = self.conv9(x)
+        
+
+        #x = F.relu(self.conv0(x))
+        #x = F.relu(self.conv1(x))
+        #x = F.relu(self.conv2(x))
+        #x = F.relu(self.conv3(x))
+        #x = F.relu(self.conv4(x))
+        #x = F.relu(self.conv5(x))
+        #x = F.relu(self.conv5_5(x))
+        
+        #x = self.upsample0(x)
+        #x = F.relu(self.conv6(x))
+        #x = self.upsample1(x)
+        #x = F.relu(self.conv6_5(x))
+        #x = self.upsample2(x)
+        #x = F.relu(self.conv7(x))
+        #x = self.upsample3(x)
+        #x = F.relu(self.conv8(x))
+        #x = self.upsample4(x)
+        #x = self.conv9(x)
+        
+        return x
+        """ 
+
+class ConvNet(nn.Module):
+    def __init__(self, num_classes):
+        super(ConvNet, self).__init__()
+        self.batchnorm8 = nn.BatchNorm2d(8)
+        self.batchnorm16 = nn.BatchNorm2d(32)
+        self.batchnorm64 = nn.BatchNorm2d(64)
+        self.batchnorm128 = nn.BatchNorm2d(128)
+        self.batchnorm256 = nn.BatchNorm2d(256)
+        self.batchnorm512 = nn.BatchNorm2d(512)
+        self.batchnorm1024 = nn.BatchNorm2d(1024)
+        
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+        
+        self.conv0 = nn.Conv2d(1, 8, kernel_size=3, padding=1)
+        self.conv1 = nn.Conv2d(8, 32, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
+        self.conv3 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
+        self.conv4 = nn.Conv2d(128, 256, kernel_size=3, padding=1)
+        self.conv5 = nn.Conv2d(256, 512, kernel_size=3, padding=1)
+        self.conv5_5 = nn.Conv2d(512, 1024, kernel_size=3, padding=1)
+
+        self.conv5_6 = nn.Conv2d(1024, 1024, kernel_size=3, padding="same")
+
+        self.upsample0 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.conv6 = nn.Conv2d(1024, 512, kernel_size=3, padding=1)
+        self.upsample1 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.conv6_5 = nn.Conv2d(512, 256, kernel_size=3, padding=1)
+        self.upsample2 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.conv7 = nn.Conv2d(256, 128, kernel_size=3, padding=1)
+        self.upsample3 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.conv8 = nn.Conv2d(128, 128, kernel_size=3, padding=1)
+        self.upsample4 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.conv9 = nn.Conv2d(128, num_classes * 2, kernel_size=3, padding=1)
+
+    def forward(self, x):
+        x = self.batchnorm8(F.relu(self.conv0(x)))
+        x = self.batchnorm16(F.relu(self.conv1(x)))
+        x = self.pool(x)  # MaxPooling
+        x = self.batchnorm64(F.relu(self.conv2(x)))
+        x = self.pool(x)  # MaxPooling
+        x = self.batchnorm128(F.relu(self.conv3(x)))
+        x = self.pool(x)  # MaxPooling
+        x = self.batchnorm256(F.relu(self.conv4(x)))
+        x = self.pool(x)  # MaxPooling
+        x = self.batchnorm512(F.relu(self.conv5(x)))
+        x = self.pool(x)  # MaxPooling
         x = self.batchnorm1024(F.relu(self.conv5_5(x)))
+        
+        x = self.pool(x)  # MaxPooling
+        x = self.batchnorm1024(F.relu(self.conv5_6(x)))
+        x = self.batchnorm1024(F.relu(self.conv5_6(x)))
+        x = self.upsample0(x)
 
         x = self.upsample0(x)
         x = self.batchnorm512(F.relu(self.conv6(x)))
@@ -285,34 +379,14 @@ class ConvNet(nn.Module):
         x = self.upsample2(x)
         x = self.batchnorm128(F.relu(self.conv7(x)))
         x = self.upsample3(x)
-        x = self.batchnorm64(F.relu(self.conv8(x)))
-        x = self.upsample4(x)
-        x = self.batchnorm512(F.relu(self.conv9(x)))
-        """
-        x = F.relu(self.conv0(x))
-        x = F.relu(self.conv1(x))
-        x = F.relu(self.conv2(x))
-        x = F.relu(self.conv3(x))
-        x = F.relu(self.conv4(x))
-        x = F.relu(self.conv5(x))
-        x = F.relu(self.conv5_5(x))
-        
-        x = self.upsample0(x)
-        x = F.relu(self.conv6(x))
-        x = self.upsample1(x)
-        x = F.relu(self.conv6_5(x))
-        x = self.upsample2(x)
-        x = F.relu(self.conv7(x))
-        x = self.upsample3(x)
-        x = F.relu(self.conv8(x))
+        x = self.batchnorm128(F.relu(self.conv8(x)))
         x = self.upsample4(x)
         x = self.conv9(x)
-        """
+        
         return x
-    
-runs_path = None#"Imagenette_pixel_classification_lab_20250103_015413"
-#trained_model = "./models_Imagenette_classification_lab/model_20250103_015413_49"
-
+"""
+runs_path = "Imagenette_pixel_classification_lab_20250106_015415"#Imagenette_pixel_classification_lab_20250104_132551"
+trained_model = "./models_Imagenette_classification_lab/model_20250106_015415_9"
 model = ConvNet(num_classes=NUM_CLASSES).to(device)
 #model.load_state_dict(torch.load(trained_model, weights_only="True"))
 # Loss function and optimizer
@@ -321,6 +395,13 @@ criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=50)
 #scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
+
+#loading model to continue training
+checkpoint = torch.load(trained_model)
+start_epoch = checkpoint['epoch']
+model.load_state_dict(checkpoint['model'])
+optimizer.load_state_dict(checkpoint['optimizer'])
+#start_epoch = 0
 
 def compute_loss(outputs, targets):
     # Aufteilen der Logits in die Kanäle a und b
@@ -411,7 +492,6 @@ def validation_loss(epoch_index, writer):
 
 # Training the model
 def train_model():
-    start_epoch = 0
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     if runs_path != None:
         writer = SummaryWriter('runs_lab/{}'.format(runs_path))
@@ -430,6 +510,16 @@ def train_model():
         print('LOSS train {} valid {}'.format(avg_loss, avg_vloss))
         if avg_vloss < best_vloss:
             best_vloss = avg_vloss
+            model_path = './models_Imagenette_classification_lab/model_{}_{}'.format(timestamp, epoch)
+
+            checkpoint = { 
+                'epoch': epoch,
+                'model': model.state_dict(),
+                'optimizer': optimizer.state_dict()}
+            torch.save(checkpoint, model_path)
+            #torch.save(model.state_dict(), model_path)
+            print(f"saved checkpoint in {model_path}")
+        elif epoch == EPOCHS-1:
             model_path = './models_Imagenette_classification_lab/model_{}_{}'.format(timestamp, epoch)
 
             checkpoint = { 
@@ -472,7 +562,7 @@ def plot_images(original, grayscale, colorized):
     ax[2].axis('off')
     plt.show()
 
-def plot_examples(model=model):
+def plot_examples(model=ConvNet(NUM_CLASSES)):
     model.eval().to(device)
     with torch.no_grad():
         for i, (images, _) in enumerate(test_loader):
