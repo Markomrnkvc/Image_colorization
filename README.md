@@ -10,12 +10,17 @@ type the following commands
 
 ```console
 git clone https://github.com/Markomrnkvc/Image_colorization.git
-cd DeOldify
+cd Image_colorization
 conda env create -f environment.yml
 ```
+--> the datasets needed will be downloaded automatically :)
 
-Then you can start using the code! 
+Now you can start using the code! 
 
+
+#### Using the code
+
+1.for the easiest way to use the code navigate to the /src folder within the repo
 
 From there you can start running the notebooks in Jupyter Lab, via the url they
 provide you in the console.
