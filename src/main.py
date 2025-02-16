@@ -105,18 +105,20 @@ elif args.mode == "colorization":
     if args.dataset == "Cifar10":
         if args.problem == "regression":
             print("coloring example image...\n")
-            plotting_results.eval_model_and_plot()  
+            plotting_results.eval_model_and_plot(args)  
 
         elif args.problem == "classification":
             classification_plot_examples.colorization(args)
 
-    elif args.dataset == "Imagenette":
+    elif args.dataset == "Imagenette" and args.problem == "regression":
+        plotting_results.eval_model_and_plot(args) 
+        
+    elif args.dataset == "Imagenette" and args.problem == "classification":
         classification_plot_examples.colorization(args)
-
 elif args.mode == "live":  
     print("coloring live image...\n")
     live_demo.live(args)
 
 elif args.mode == "diashow" and args.folder != None:  
-    print("coloring live image...\n")
+    print("coloring diashow ...\n")
     diashow.main(args)
