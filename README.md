@@ -1,24 +1,5 @@
 # Image_colorization
-
-# DeOldify
-
-**This Reposisitory is Archived**  This project was a wild ride since I started it back in 2018.  6 years ago as of this writing (October 19, 2024)!.  It's time for me to move on and put this repo in the archives as I simply don't have the time to attend to it anymore, and frankly it's ancient as far as deep-learning projects go at this point! ~Jason
-
-**Quick Start**: The easiest way to colorize images using open source DeOldify
-(for free!) is here: [DeOldify Image Colorization on DeepAI](https://deepai.org/machine-learning-model/colorizer)
-
-**Desktop**: Want to run open source DeOldify for photos and videos on the desktop?
-* Stable Diffusion Web UI Plugin- Photos and video, cross-platform (NEW!). <https://github.com/SpenserCai/sd-webui-deoldify>
-* ColorfulSoft Windows GUI- No GPU required! Photos/Windows only. <https://github.com/ColorfulSoft/DeOldify.NET>.
-No GPU required!
-
-**In Browser (new!)**  Check out this Onnx-based in browser implementation:  https://github.com/akbartus/DeOldify-on-Browser
-
-The **most advanced** version of DeOldify image colorization is available here,
-exclusively.  Try a few images for free! [MyHeritage In Color](https://www.myheritage.com/incolor)
-
-**Replicate:** Image: <a href="https://replicate.com/arielreplicate/deoldify_image"><img src="https://replicate.com/arielreplicate/deoldify_image/badge"></a> | Video: <a href="https://replicate.com/arielreplicate/deoldify_video"><img src="https://replicate.com/arielreplicate/deoldify_video/badge"></a>
-
+![](https://github.com/Markomrnkvc/Image_colorization/gif_colorization.gif)
 ----------------------------
 
 Image (artistic) [![Colab for images](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb)
