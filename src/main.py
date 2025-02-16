@@ -14,6 +14,7 @@ import live_demo
 import CIFAR10_classification
 import classification_plot_examples
 import Imagenette_classification
+import diashow
 
 # import lab_class
 
@@ -28,7 +29,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "-m",
     "--mode",
-    choices=["training", "colorization", "live"],
+    choices=["training", "colorization", "live", "diashow"],
     help="Choose which mode you want to execute",
 )
 parser.add_argument(
@@ -56,6 +57,12 @@ parser.add_argument(
     help="choose wether to plot examples after finishing training",
 )
 
+parser.add_argument(
+    "-f",
+    "--folder",
+    # nargs="+",
+    help="path of your image folder",
+)
 
 args = parser.parse_args()
 
@@ -98,33 +105,18 @@ elif args.mode == "colorization":
     if args.dataset == "Cifar10":
         if args.problem == "regression":
             print("coloring example image...\n")
-            plotting_results.eval_model_and_plot()  # .colorization(dataset = args.dataset)
+            plotting_results.eval_model_and_plot()  
 
         elif args.problem == "classification":
             classification_plot_examples.colorization(args)
 
     elif args.dataset == "Imagenette":
         classification_plot_examples.colorization(args)
-elif args.mode == "live":  # and args.dataset == "Cifar10":
+
+elif args.mode == "live":  
     print("coloring live image...\n")
-    # plotting_results.eval_model_and_plot()
     live_demo.live(args)
-    # live_demo.main()
-"""  
-elif args.mode == "colorization" and args.dataset != None:
-    if args.mode == "regression":
-        print("coloring example image...")
-        #plotting_results.eval_model_and_plot()
-        plotting_results.colorization(dataset = args.dataset)
-    elif args.mode == "classification":
-        classification_plot_examples.plot_examples()#colorization(dataset = args.dataset)
-"""
 
-
-"""
-elif args.mode == "training" and args.dataset == "Imagenette":
-    Imagenette_colorization.trainConvNet()
-    if args.plot_examples == "True":
-        print("plotting examples\n")
-        Imagenette_colorization.plot_examples()
-"""
+elif args.mode == "diashow" and args.folder != None:  
+    print("coloring live image...\n")
+    diashow.main(args)
