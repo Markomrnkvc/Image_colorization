@@ -44,4 +44,4 @@ The code uses argparse parsing to start different Functions and methods or to ch
 
 
 #### My poster for presenting the Project at our University's AI-CON
-![](https://github.com/Markomrnkvc/Image_colorization/blob/readme/AI_Poster_Marinkovic.pdf)
+![](https://github.com/Markomrnkvc/Image_colorization/blob/readme/AI_Poster_Marinkovic.png)
