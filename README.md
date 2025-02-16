@@ -1,5 +1,5 @@
 # Image_colorization
-![](https://github.com/Markomrnkvc/Image_colorization/gif_colorization.gif)
+![](https://github.com/Markomrnkvc/Image_colorization/blob/readme/gif_colorization.gif)
 ----------------------------
 
 Image (artistic) [![Colab for images](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb)
