@@ -20,7 +20,20 @@ Now you can start using the code!
 
 #### Using the code
 
-1.for the easiest way to use the code navigate to the /src folder within the repo
+###### for the easiest way to use the code navigate to the /src folder within the repo
+
+The code uses argparse parsing to start different Functions and methods or to choose between the datasets
+- "--mode": choose between the modes:
+                training (training the network)
+                colorization (colorizing an example image)
+                live (using colorizing on your webcam)
+                diashow (colorizing images saved on a folder on your PC)
+- "dataset": choose between [CIFAR10,Imagenette]
+                you will need to choose a dataset for the modes: training, colorization, live
+- "problem": choose between the type of problem [regression, classification]
+                the code has different networks which color images using regression or classification (classification works better ;) )
+- "folder": input the folder your images are saved in
+                you will need this argument for mode diashow
 
 From there you can start running the notebooks in Jupyter Lab, via the url they
 provide you in the console.
