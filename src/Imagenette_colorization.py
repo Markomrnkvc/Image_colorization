@@ -194,20 +194,9 @@ def trainConvNet():
                         { 'Training' : avg_loss, 'Validation' : avg_vloss },
                         epoch_number + 1)
         writer.flush()
-
-        # Track best performance, and save the model's state
-        #if avg_vloss < best_vloss:
-            #best_vloss = avg_vloss
-            
-        #saving model each epoch
-        #checkpoint = {'state_dict' : model.state_dict(), 'optimizer' : optimizer.state_dict()}
-        #os.mkdir('./runs/CIFAR_colorization_{}./models'.format(timestamp))
-        #model_path = './runs/CIFAR_colorization_{}./models/model_{}_{}'.format(timestamp, timestamp, epoch_number)
+    
         model_path = './models_Imagenette/model_{}_{}'.format( timestamp, epoch_number)
-        #torch.save(model.state_dict(), model_path)
         torch.save(model.state_dict(), model_path)
-        #torch.save(model, model_path)
-        #torch.save(checkpoint, model_path)
         print(f"saved checkpoint in {model_path}")
 
         epoch_number += 1
