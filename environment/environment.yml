@@ -1,4 +1,4 @@
-name: C:\Users\marko\anaconda3\envs\marko\envs\marko\envs\open-cv
+name: image_colorization
 channels:
   - pytorch
   - nvidia
