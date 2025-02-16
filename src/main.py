@@ -13,6 +13,9 @@ import plotting_results
 import live_demo
 import CIFAR10_classification
 import classification_plot_examples
+import Imagenette_classification
+
+# import lab_class
 
 
 parser = argparse.ArgumentParser(
@@ -38,18 +41,18 @@ parser.add_argument(
 parser.add_argument(
     "-pr",
     "--problem",
-    #nargs="+",
+    # nargs="+",
     choices=["regression", "classification"],
-    default = "classification",
+    default="classification",
     help="choose wether you want to train the regression model or the classification model",
 )
 
 parser.add_argument(
     "-pl",
     "--plot_examples",
-    #nargs="+",
+    # nargs="+",
     choices=["True", "False"],
-    default = "True",
+    default="True",
     help="choose wether to plot examples after finishing training",
 )
 
@@ -57,44 +60,71 @@ parser.add_argument(
 args = parser.parse_args()
 
 # switch control flow based on arguments
-if args.mode == "training" and args.dataset == "Cifar10":
-    if args.problem == "regression":
-        print("training regression image colorization network...\n")
-        CIFAR_colorization.trainConvNet()
-        if args.plot_examples == "True":
-            print("plotting examples")
-            CIFAR_colorization.plot_examples()
+if args.mode == "training":
 
-    elif args.problem == "classification":
-        print("training classification image colorization network...\n")
-        CIFAR10_classification.train_model()
-        if args.plot_examples == "True":
-            print("plotting examples")
-            CIFAR10_classification.plot_examples()
+    if args.dataset == "Cifar10":
+        if args.problem == "regression":
+            print("training regression image colorization network...\n")
+            CIFAR_colorization.trainConvNet()
+            if args.plot_examples == "True":
+                print("plotting examples")
+                CIFAR_colorization.plot_examples()
 
+        elif args.problem == "classification":
+            print("training classification image colorization network...\n")
+            CIFAR10_classification.train_model()
+            if args.plot_examples == "True":
+                print("plotting examples")
+                CIFAR10_classification.plot_examples()
+
+    elif args.dataset == "Imagenette":
+        if args.problem == "regression":
+            print("training regression image colorization network...\n")
+            Imagenette_colorization.trainConvNet()
+            if args.plot_examples == "True":
+                print("plotting examples\n")
+                Imagenette_colorization.plot_examples()
+
+        elif args.problem == "classification":
+            print("training classification image colorization network...\n")
+            # lab_class.train_model()
+            Imagenette_classification.train_model()
+            if args.plot_examples == "True":
+                print("plotting examples")
+                # lab_class.plot_examples()
+                Imagenette_classification.plot_examples()
+
+elif args.mode == "colorization":
+    if args.dataset == "Cifar10":
+        if args.problem == "regression":
+            print("coloring example image...\n")
+            plotting_results.eval_model_and_plot()  # .colorization(dataset = args.dataset)
+
+        elif args.problem == "classification":
+            classification_plot_examples.colorization(args)
+
+    elif args.dataset == "Imagenette":
+        classification_plot_examples.colorization(args)
+elif args.mode == "live":  # and args.dataset == "Cifar10":
+    print("coloring live image...\n")
+    # plotting_results.eval_model_and_plot()
+    live_demo.live(args)
+    # live_demo.main()
+"""  
+elif args.mode == "colorization" and args.dataset != None:
+    if args.mode == "regression":
+        print("coloring example image...")
+        #plotting_results.eval_model_and_plot()
+        plotting_results.colorization(dataset = args.dataset)
+    elif args.mode == "classification":
+        classification_plot_examples.plot_examples()#colorization(dataset = args.dataset)
+"""
+
+
+"""
 elif args.mode == "training" and args.dataset == "Imagenette":
     Imagenette_colorization.trainConvNet()
     if args.plot_examples == "True":
         print("plotting examples\n")
         Imagenette_colorization.plot_examples()
-
-elif args.mode == "colorization" and args.dataset == "Cifar10":
-    if args.problem == "regression":
-        print("coloring example image...\n")
-        plotting_results.colorization(dataset = args.dataset)
-    elif args.problem == "classification":
-        classification_plot_examples.plot_examples()
-
-elif args.mode == "live" and args.dataset == "Imagenette":
-    print("coloring example image...\n")
-    #plotting_results.eval_model_and_plot()
-    live_demo.live(args)    
-    
 """
-elif args.mode == "colorization" and args.dataset != None:
-    print("coloring example image...")
-    #plotting_results.eval_model_and_plot()
-    plotting_results.colorization(dataset = args.dataset)
-"""
-
-
