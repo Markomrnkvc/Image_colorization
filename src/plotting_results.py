@@ -7,7 +7,8 @@ from CIFAR_colorization import ConvNet,  test_dataset, test_loader, train_loader
 #trained_model_path = "./models_Cifar10/model_20241104_232646_18"
 #trained_model_path = "./models_Cifar10/model_20241208_193034_14"
 #trained_model_path = "./models_Cifar10/model_20241208_181658_49" #das hier ist die Unet structure
-trained_model_path = "./models_Cifar10/model_20241211_124608_99"
+#trained_model_path = "./models_Cifar10/model_20241211_124608_99"
+trained_model_path = "./models_Cifar10/model_20250216_115232_79"
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
