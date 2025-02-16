@@ -42,6 +42,8 @@ The code uses argparse parsing to start different Functions and methods or to ch
 - python main.py --mode "colorization" --dataset "Imagenette" --problem "classification" (colorizing an example image from Imagenette dataset's trained classification model)
 - python main.py --mode "live" --dataset "Imagenette" (starting live mode based on Imagenette trained classification model)
 
+#### flowchart of file structure
+![](https://github.com/Markomrnkvc/Image_colorization/blob/readme/codestructure_chart.png)
 
 #### My poster for presenting the Project at our University's AI-CON
 ![](https://github.com/Markomrnkvc/Image_colorization/blob/readme/AI_Poster_Marinkovic.png)
