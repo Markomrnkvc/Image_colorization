@@ -28,17 +28,17 @@ The code uses argparse parsing to start different Functions and methods or to ch
     -colorization (colorizing an example image)
     -live (using colorizing on your webcam)
     -diashow (colorizing images saved on a folder on your PC)
-- "dataset": choose between [CIFAR10,Imagenette]
+- "--dataset": choose between [CIFAR10,Imagenette]
     -you will need to choose a dataset for the modes: training, colorization, live
-- "problem": choose between the type of problem [regression, classification]
+- "--problem": choose between the type of problem [regression, classification]
     -the code has different networks which color images using regression or classification (classification works better ;) )
-- "folder": input the folder your images are saved in
+- "--folder": input the folder your images are saved in
     - you will need this argument for mode diashow
 
 
 #### some examples for starting the code via your terminal
--python main.py --mode "training" --dataset "Cifar10" --problem "regression" (training regression model for CIFAR10)
--python main.py --mode "training" --dataset "Cifar10" --problem "classification" (training classification model for CIFAR10)
--python main.py --mode "colorization" --dataset "Imagenette" --problem "classification" (colorizing an example image from Imagenette dataset's trained classification model)
--python main.py --mode "live" --dataset "Imagenette" (starting live mode based on Imagenette trained classification model)
+- python main.py --mode "training" --dataset "Cifar10" --problem "regression" (training regression model for CIFAR10)
+- python main.py --mode "training" --dataset "Cifar10" --problem "classification" (training classification model for CIFAR10)
+- python main.py --mode "colorization" --dataset "Imagenette" --problem "classification" (colorizing an example image from Imagenette dataset's trained classification model)
+- python main.py --mode "live" --dataset "Imagenette" (starting live mode based on Imagenette trained classification model)
 
