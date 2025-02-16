@@ -9,17 +9,13 @@ Open the command line and navigate to the folder where you want to download the 
 type the following commands
 
 ```console
-git clone https://github.com/jantic/DeOldify.git DeOldify
+git clone https://github.com/Markomrnkvc/Image_colorization.git
 cd DeOldify
 conda env create -f environment.yml
 ```
 
-Then start running with these commands:
+Then you can start using the code! 
 
-```console
-source activate deoldify
-jupyter lab
-```
 
 From there you can start running the notebooks in Jupyter Lab, via the url they
 provide you in the console.
