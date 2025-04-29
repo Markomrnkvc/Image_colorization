@@ -11,7 +11,8 @@ type the following commands
 ```console
 git clone https://github.com/Markomrnkvc/Image_colorization.git
 cd Image_colorization
-conda env create -f environment.yml
+pip install -r environment/requirements.txt #installing dependencies
+
 ```
 --> the datasets needed will be downloaded automatically :)
 
