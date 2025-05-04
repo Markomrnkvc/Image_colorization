@@ -39,6 +39,7 @@ The code uses argparse parsing to start different Functions and methods or to ch
     - you will need this argument for mode diashow
 
 --> e.g. this command will colorize one random image from the imagenette dataset using the classification CNN
+
     python main.py --mode "colorization" --dataset "Imagenette" --problem "classification"
 
 
