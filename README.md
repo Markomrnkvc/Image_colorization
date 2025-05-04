@@ -1,4 +1,6 @@
 # Image_colorization
+![image](https://github.com/user-attachments/assets/1d473231-78dc-4459-b151-42e89b6ff20d)
+![image](https://github.com/user-attachments/assets/2dfd64dd-5fdd-4d95-828f-f26c9769e2c5)
 ![](https://github.com/Markomrnkvc/Image_colorization/blob/readme/gif_colorization.gif)
 ---------
 #### Install with Anaconda
